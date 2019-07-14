@@ -55,21 +55,36 @@ capitulos = []
 lenslug = len(slug)
 for cap in elem:
     if cap.span != None:
-        nome = cap.span.string
-    else:
-        nome = ' '
-    capitulos.append({
-        'href': cap['href'][lenslug:],
-        'nome': nome
-    })
+        capitulos.append({
+            'href': cap['href'][lenslug:],
+            'nome': cap.span.string
+        })
     # print(cap.span.string)
 
-print(capitulos)
+# print(capitulos)
 
 #TODO Imprimir capitulos de forma limpa, com titulo
 recorte = '/' + lista[i]['abvv'].lower() + '-chapter-'
 lrecorte = len(recorte)
-l = 0
+l = 1
 for cap in capitulos:
-    print(f'[{l}] {cap["href"][lrecorte: ]} - {cap["nome"]}')
+    print(f'[{l}] {cap["nome"]}')
     l += 1
+
+while True:
+    try:
+        print('Escolha um capitulo, o numero necessário é o que esta entre [] ')
+        print('Use -1 para sair')
+        cap = int(input('Capitulo: '))
+        if cap == -1:
+            exit()
+        elif cap > 0 and cap <= len(capitulos):
+            cap -= 1
+            break
+        else:
+            raise ValueError('Não existe uma novel com esse index!') 
+    except ValueError as err:
+        print('Valor invalido!')
+        print(err)
+
+print(capitulos[cap])
