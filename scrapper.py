@@ -3,13 +3,43 @@ from bs4 import BeautifulSoup
 import json
 import re
 
+def pegar_novel(r):
+    ''' Essa função recebe o request e retorna a novel da página'''
+    soup = BeautifulSoup(r.content, 'html.parser')
+    # file = open('soup.html', 'w')
+    # file.write(str(soup))
+    # file.close()
+    texto = soup.find_all('p', style=False)
+    # ftexto = open('texto.html', 'w')
+    # ftexto.write(str(texto))
+    # ftexto.close()
+
+    ''' Removendo as tags'''
+    # ftexto = open('processado.html', 'w')
+    arq = []
+    for p in texto:
+    #     print(p)
+        if not (p.a != None and p.a['href'].startswith('/announcement/')):
+            arq.append(p)
+            # ftexto.write(str(p))
+            # ftexto.write('\n')
+    # ftexto.close()
+    novel = []
+    for p in arq:
+        if p.string not in [None, 'Contact Us',
+                            'Privacy Policy',
+                            'RSS', 'Twitter',
+                            'Facebook', 'Discord']:
+            novel.append(p.string)
+    return novel
+
 url = 'https://www.wuxiaworld.com/api/novels/search?'
-nome = 'King'
+nome = str(input('Nome da novel:'))
 ''' Adequa o nome, ao formato necessário ao link. Substituindo os ' '  por '+' '''
 nome = nome.strip().replace(' ', '+')
 plink = {
     'query' : nome,
-    'count' : 5
+    'count' : 3
 }
 r = requests.get(url, plink)
 rjson = json.loads(r.content)
@@ -44,6 +74,7 @@ while True:
 slug = '/novel/' + lista[i]['slug']
 link = 'https://www.wuxiaworld.com' + slug
 r = requests.get(link)
+# print(r.url)
 if r.status_code != 200:
     print(f'Resposta do {r.url} \nCódigo {r.status_code}!!')
     exit()
@@ -63,7 +94,7 @@ for cap in elem:
 
 # print(capitulos)
 
-#TODO Imprimir capitulos de forma limpa, com titulo
+# Imprimir capitulos de forma limpa, com titulo
 recorte = '/' + lista[i]['abvv'].lower() + '-chapter-'
 lrecorte = len(recorte)
 l = 1
@@ -87,4 +118,14 @@ while True:
         print('Valor invalido!')
         print(err)
 
-print(capitulos[cap])
+# print(capitulos[cap])
+
+#TODO Abrir a página da novel selecionada, e extrair o texto dela
+link += capitulos[cap]['href']
+r = requests.get(link)
+if r.status_code != 200:
+    print(f'Resposta do url: {r.url}\n Código: {r.status_code}!!') 
+    exit()
+
+novel = pegar_novel(r)
+print(novel)
