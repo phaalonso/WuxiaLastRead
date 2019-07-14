@@ -6,24 +6,14 @@ import re
 def pegar_novel(r):
     ''' Essa função recebe o request e retorna a novel da página'''
     soup = BeautifulSoup(r.content, 'html.parser')
-    # file = open('soup.html', 'w')
-    # file.write(str(soup))
-    # file.close()
     texto = soup.find_all('p', style=False)
-    # ftexto = open('texto.html', 'w')
-    # ftexto.write(str(texto))
-    # ftexto.close()
 
     ''' Removendo as tags'''
-    # ftexto = open('processado.html', 'w')
     arq = []
     for p in texto:
-    #     print(p)
         if not (p.a != None and p.a['href'].startswith('/announcement/')):
             arq.append(p)
-            # ftexto.write(str(p))
-            # ftexto.write('\n')
-    # ftexto.close()
+            
     novel = []
     for p in arq:
         if p.string not in [None, 'Contact Us',
