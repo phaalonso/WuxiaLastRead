@@ -7,14 +7,13 @@ def pegar_novel(r):
     ''' Essa função recebe o request e retorna a novel da página'''
     soup = BeautifulSoup(r.content, 'html.parser')
     texto = soup.find_all('p', style=False)
-
-    ''' Removendo as tags'''
     arq = []
     for p in texto:
         if not (p.a != None and p.a['href'].startswith('/announcement/')):
             arq.append(p)
-            
+
     novel = []
+    ''' Filtrando o arquivo '''
     for p in arq:
         if p.string not in [None, 'Contact Us',
                             'Privacy Policy',
@@ -23,29 +22,55 @@ def pegar_novel(r):
             novel.append(p.string)
     return novel
 
-url = 'https://www.wuxiaworld.com/api/novels/search?'
-nome = str(input('Nome da novel:'))
-''' Adequa o nome, ao formato necessário ao link. Substituindo os ' '  por '+' '''
-nome = nome.strip().replace(' ', '+')
-plink = {
-    'query' : nome,
-    'count' : 3
-}
-r = requests.get(url, plink)
-rjson = json.loads(r.content)
-# print(rjson['items'])
-# file = open('arq.json','w')
-# json.dump(rjson, file)
-# file.close()
+def pesquisar_novel():
+    ''' 
+        Essa função realiza a pesquisa da novel na WuxiaWorld, atráves da api e retorna 
+        uma lista com dicionários contendo os resultados da pesquisa.
+        Os dicionários estao no seguinte formato:
+        {
+            'nome' : 'Nome da novel',
+            'slug' : 'Caminho para abrir a página da novel',
+            'abvv' : 'Abreviação da novel'
+        }
+        O script continuara a se repetir até que o usuario deseja sair, ou encontre algum resultado valido
+    '''
+    print('Você pode usar -1 para sair do script.')
+    while True:
+        api = 'https://www.wuxiaworld.com/api/novels/search?'
+        
+        nome = str(input('Nome da novel:')).strip().replace(' ', '+')
+        if nome == '-1':
+            exit()
+        
+        try:
+            r = requests.get(api, {
+                'query': nome, 
+                'count': 3
+                })
+            rjson = json.loads(r.content)
+        except requests.ConnectionError as err:
+            print('Ocorreu um erro de conexão')
+            print('Porfavor verifique se há conexão com a internet!')
+            exit()
+        except json.JSONDecodeError as err:
+            print('Algo de errado aconteceu com json!')
+            print(err)
+            exit()
+        if len(rjson['items']) > 0: 
+            break
+        else:
+            print(f'Nao encontramos nenhuma novel com esse nome: "{nome}"')
 
-lista = []
-for item in rjson['items']:
-    lista.append({
-        'nome' : item['name'],
-        'slug' : item['slug'],
-        'abvv'  : item['abbreviation']
-    })
+    lista = []
+    for item in rjson['items']:
+        lista.append({
+            'nome' : item['name'],
+            'slug' : item['slug'],
+            'abvv'  : item['abbreviation']
+        })
+    return lista
 
+lista = pesquisar_novel()
 print('Novels encontradas:')
 i = 0
 for novel in lista:
