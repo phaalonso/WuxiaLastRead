@@ -34,10 +34,9 @@ def pesquisar_novel():
         }
         O script continuara a se repetir até que o usuario deseja sair, ou encontre algum resultado valido
     '''
+    api = 'https://www.wuxiaworld.com/api/novels/search?'
     print('Você pode usar -1 para sair do script.')
     while True:
-        api = 'https://www.wuxiaworld.com/api/novels/search?'
-        
         nome = str(input('Nome da novel:')).strip().replace(' ', '+')
         if nome == '-1':
             exit()
