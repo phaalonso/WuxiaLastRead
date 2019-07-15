@@ -3,25 +3,6 @@ from bs4 import BeautifulSoup
 import json
 import re
 
-def pegar_novel(r):
-    ''' Essa função recebe o request e retorna a novel da página'''
-    soup = BeautifulSoup(r.content, 'html.parser')
-    texto = soup.find_all('p', style=False)
-    arq = []
-    for p in texto:
-        if not (p.a != None and p.a['href'].startswith('/announcement/')):
-            arq.append(p)
-
-    novel = []
-    ''' Filtrando o arquivo '''
-    for p in arq:
-        if p.string not in [None, 'Contact Us',
-                            'Privacy Policy',
-                            'RSS', 'Twitter',
-                            'Facebook', 'Discord']:
-            novel.append(p.string)
-    return novel
-
 def pesquisar_novel():
     ''' 
         Essa função realiza a pesquisa da novel na WuxiaWorld, atráves da api e retorna 
@@ -65,11 +46,64 @@ def pesquisar_novel():
         lista.append({
             'nome' : item['name'],
             'slug' : item['slug'],
-            'abvv'  : item['abbreviation']
+            'abvv' : item['abbreviation']
         })
     return lista
 
+def novel_capitulos(link, slug):
+    ''' 
+        Essa função é responsavel por encontrar os capitulos no site e os retornar em uma lista 
+        O parametro r é a resposta do request ao site da novel, enquanto o slug é link utilizado para acessar essa página. 
+        Se o link da pagina fosse https://www.wuxiaworld.com/novel/emperors-domination
+        O slug seria novel/emperors-domination
+    '''
+    try:
+        r = requests.get(link)
+        if r.status_code != 200:
+            print(f'Resposta do {r.url} \nCódigo {r.status_code}!!')
+            exit()
+    except requests.ConnectionError as err:
+        print('Ocorreu um erro de conexão')
+        print('Porfavor verifique se há conexão com a internet!')
+        exit()
+
+    soup = BeautifulSoup(r.content, 'html.parser')
+    elem = soup.find_all('a', href=re.compile(slug))
+    capitulos = []
+    lenslug = len(slug)
+    for cap in elem:
+        if cap.span != None:
+            capitulos.append({
+                'href': cap['href'][lenslug:],
+                'nome': cap.span.string
+            })
+        # print(cap.span.string)
+
+    return capitulos
+
+
+def pegar_novel(r):
+    ''' Essa função recebe o request e retorna a novel da página'''
+    soup = BeautifulSoup(r.content, 'html.parser')
+    texto = soup.find_all('p', style=False)
+    arq = []
+    for p in texto:
+        if not (p.a != None and p.a['href'].startswith('/announcement/')):
+            arq.append(p)
+
+    novel = []
+    ''' Filtrando o arquivo '''
+    for p in arq:
+        if p.string not in [None, 'Contact Us',
+                            'Privacy Policy',
+                            'RSS', 'Twitter',
+                            'Facebook', 'Discord']:
+            novel.append(p.string)
+    return novel
+
+
 lista = pesquisar_novel()
+
 print('Novels encontradas:')
 i = 0
 for novel in lista:
@@ -87,30 +121,10 @@ while True:
 
 slug = '/novel/' + lista[i]['slug']
 link = 'https://www.wuxiaworld.com' + slug
-r = requests.get(link)
-# print(r.url)
-if r.status_code != 200:
-    print(f'Resposta do {r.url} \nCódigo {r.status_code}!!')
-    exit()
 
-sop = BeautifulSoup(r.content, 'html.parser')
-# print(sop)
-elem = sop.find_all('a', href=re.compile(lista[i]['slug']))
-capitulos = []
-lenslug = len(slug)
-for cap in elem:
-    if cap.span != None:
-        capitulos.append({
-            'href': cap['href'][lenslug:],
-            'nome': cap.span.string
-        })
-    # print(cap.span.string)
+capitulos = novel_capitulos(link, slug)
 
-# print(capitulos)
-
-# Imprimir capitulos de forma limpa, com titulo
-recorte = '/' + lista[i]['abvv'].lower() + '-chapter-'
-lrecorte = len(recorte)
+''' Imprimir capitulos de forma limpa, com titulo '''
 l = 1
 for cap in capitulos:
     print(f'[{l}] {cap["nome"]}')
