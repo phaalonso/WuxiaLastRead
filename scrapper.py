@@ -81,9 +81,16 @@ def novel_capitulos(link, slug):
 
     return capitulos
 
-
-def pegar_novel(r):
-    ''' Essa função recebe o request e retorna a novel da página'''
+def pegar_novel(link_capitulo):
+    ''' 
+        Essa função recebe o link do capítulo, extrai a novel da página
+        e a retorna em uma lista de paragrafos.
+    '''
+    # print(link_capitulo)
+    r = requests.get(link_capitulo)
+    if r.status_code != 200:
+        print(f'Resposta do url: {r.url}\n Código: {r.status_code}!!')
+        exit()
     soup = BeautifulSoup(r.content, 'html.parser')
     texto = soup.find_all('p', style=False)
     arq = []
@@ -149,11 +156,8 @@ while True:
 # print(capitulos[cap])
 
 #TODO Abrir a página da novel selecionada, e extrair o texto dela
-link += capitulos[cap]['href']
-r = requests.get(link)
-if r.status_code != 200:
-    print(f'Resposta do url: {r.url}\n Código: {r.status_code}!!') 
-    exit()
+link_capitulo = link + capitulos[cap]['href']
+print(link_capitulo)
+novel = pegar_novel(link_capitulo)
 
-novel = pegar_novel(r)
 print(novel)
