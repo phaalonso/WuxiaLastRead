@@ -12,6 +12,9 @@ import scrapper
     }
 '''
 def pegar_lista():
+    ''' 
+        Essa função é responsavel por acessar o arquivo favoritos.json e retornar as informações dela em um dicionário
+    '''
     try:
         with open('favoritos.json', 'r') as f:
             lista = json.load(f)
@@ -22,6 +25,10 @@ def pegar_lista():
     return lista
 
 def adicionar(lista):
+    ''' 
+        Essa função realiza a pesqusia da novel que o usuário deseja adicionar ao seus favoritos.
+        Ela irá verificar se a novel ja foi adicionado, e caso não seja ela irá receber o ultimo capitulo lido do usuário e salver em um arquivo.
+    '''
     novel = scrapper.pesquisar_novel()
 
     nomes = []
@@ -43,3 +50,34 @@ def adicionar(lista):
     print(capitulo_selecionado)
     with open('favoritos.json', 'w') as f:
         json.dump(lista, f)
+
+def verificar_atualizacao(lista):
+    ''' Realizara a verficação se a novel recebeu novos capitúlos'''
+
+    link = 'https://www.wuxiaworld.com'
+
+    for n in lista['fav']:
+        # print(n)
+        '''
+            {
+                'nome': 'The Unrivaled Tang Sect',
+                'slug': 'the-unrivaled-tang-sect', 'last': '/uts-chapter-1-2'
+            }
+         '''   
+        print(f"\n-----{n['nome']}-----")
+        slug = '/novel/' + n['slug']
+        templ = link + slug
+        capitulos = scrapper.capitulos(templ, slug)
+        # print(capitulos[-1]['href'], n['last'])
+        for cap in capitulos:
+            if n['last'] == cap['href']:
+                # print(cap)
+                index = capitulos.index(cap)
+                break
+        
+        print(f"Last read: {cap['nome']}")
+        # print(index , len(capitulos))
+        if not index == len(capitulos) - 1:
+            print(f"Next chapter: {templ + capitulos[index + 1]['href']}\n")
+        else:
+            print('You already read the last chapter!\n')

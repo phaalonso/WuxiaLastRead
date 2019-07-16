@@ -34,3 +34,5 @@ while True:
         favoritos.adicionar(lista)
     
     elif op == 3:
+        lista = favoritos.pegar_lista()
+        favoritos.verificar_atualizacao(lista)

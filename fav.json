@@ -1,0 +1,10 @@
+{
+    "Usuario" : "Pedro",
+    "Favoritos" : [
+        {
+            "nome": "Legend of the Dragon King",
+            "slug": "legend-of-the-dragon-king",
+            "abvv": "ldk"
+        }
+    ]
+}
