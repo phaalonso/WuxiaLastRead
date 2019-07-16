@@ -47,7 +47,7 @@ def adicionar(lista):
 
     novel['last'] = capitulo_selecionado['href']
     lista['fav'].append(novel)
-    print(capitulo_selecionado)
+    # print(capitulo_selecionado)
     with open('favoritos.json', 'w') as f:
         json.dump(lista, f)
 
@@ -81,3 +81,34 @@ def verificar_atualizacao(lista):
             print(f"Next chapter: {templ + capitulos[index + 1]['href']}\n")
         else:
             print('You already read the last chapter!\n')
+
+def atualizar_arquivo(lista):
+    print('Escolha uma das novels abaixo: ')
+    for i in range(0,len(lista['fav'])):
+        print(f"[{i}] {lista['fav'][i]['nome']}")
+
+    while True:
+        try:
+            op = int(input('Opção: '))
+            
+            if op == -1:
+                exit()
+            elif op >= 0 and op < len(lista['fav']):
+                break
+            else:
+                print('Opção invalida!!!')
+        except ValueError:
+            print('Digite apenas inteiros!!!')
+
+    print('----- Capitulos -----')
+    slug = '/novel/' + lista['fav'][op]['slug']
+    link = 'https://www.wuxiaworld.com' + slug
+    capitulos = scrapper.capitulos(link, slug)
+    capitulo_selecionado = scrapper.selecionar_capitulo(capitulos, link)
+
+    # print(capitulo_selecionado['href'])
+    # print(lista['fav'][op])
+    lista['fav'][op]['last'] = capitulo_selecionado['href']
+    # print(lista['fav'][op])
+    with open('favoritos.json', 'w') as f:
+        json.dump(lista, f)

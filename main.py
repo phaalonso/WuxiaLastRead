@@ -5,13 +5,14 @@ while True:
     print(' 1 - Pesquisar por uma novel')
     print(' 2 - Adicionar novel aos favoritos')
     print(' 3 - Verificar favoritos')
+    print(' 4 - Atualizar capítulo')
     print('-1 - Para sair')
     while True:
         try:
             op = int(input('Sua escolha: '))
             if op == -1:
                 exit()
-            elif op > 0 and op < 4:
+            elif op > 0 and op < 5:
                 break
         except ValueError:
             print('O valor da opção deve ser um valor inteiro!!')
@@ -36,3 +37,7 @@ while True:
     elif op == 3:
         lista = favoritos.pegar_lista()
         favoritos.verificar_atualizacao(lista)
+    
+    elif op == 4:
+        lista = favoritos.pegar_lista()
+        favoritos.atualizar_arquivo(lista)

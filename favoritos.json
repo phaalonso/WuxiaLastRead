@@ -1,1 +1,14 @@
-{"fav": [{"nome": "The Unrivaled Tang Sect", "slug": "the-unrivaled-tang-sect", "last": "/uts-chapter-1-2"}, {"nome": "Dragon King With Seven Stars", "slug": "dragon-king-with-seven-stars", "last": "/dkss-chapter-25"}]}
+{
+    "fav": [
+        {
+            "nome": "The Unrivaled Tang Sect",
+            "slug": "the-unrivaled-tang-sect",
+            "last": "/uts-chapter-520-1"
+        },
+        {
+            "nome": "Dragon King With Seven Stars",
+            "slug": "dragon-king-with-seven-stars",
+            "last": "/dkss-chapter-25"
+        }
+    ]
+}
