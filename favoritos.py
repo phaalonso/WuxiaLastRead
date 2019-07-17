@@ -56,6 +56,10 @@ def verificar_atualizacao(lista):
 
     link = 'https://www.wuxiaworld.com'
 
+    if len(lista['fav']) == 0:
+        print('\nA lista está vazia!! \nPor favor adicione uma novel primeiro!!\n')
+        return()
+
     for n in lista['fav']:
         # print(n)
         '''
@@ -83,6 +87,14 @@ def verificar_atualizacao(lista):
             print('You already read the last chapter!\n')
 
 def atualizar_arquivo(lista):
+    ''' Essa função é responsavel por atualizar o ultimo capitulo lido do usuario guardado no arquivo
+        favoritos.json
+    '''
+
+    if len(lista['fav']) == 0:
+        print('\nA lista está vazia!! \nPor favor adicione uma novel primeiro!!\n')
+        return()
+    
     print('Escolha uma das novels abaixo: ')
     for i in range(0,len(lista['fav'])):
         print(f"[{i}] {lista['fav'][i]['nome']}")
@@ -112,3 +124,5 @@ def atualizar_arquivo(lista):
     # print(lista['fav'][op])
     with open('favoritos.json', 'w') as f:
         json.dump(lista, f)
+
+    print('Capitulo atualizado!!')
