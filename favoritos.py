@@ -3,11 +3,12 @@ import scrapper
 
 '''
     {
-        "Nome" : "usuario"
-        "favoritos": [
+        "fav": [
             {
                 'nome': 'Dragon King With Seven Stars',
-                'slug': 'dragon-king-with-seven-stars'}
+                'slug': 'dragon-king-with-seven-stars',
+                'last': '/ldk-chapter-2'    
+            }
         ]
     }
 '''
