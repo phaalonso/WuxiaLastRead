@@ -3,6 +3,10 @@ from bs4 import BeautifulSoup
 import json
 import re
 
+header = {
+    "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
+}
+
 def listar():
     ''' 
         Essa função realiza a pesquisa da novel na WuxiaWorld, atráves da api e retorna 
@@ -25,7 +29,7 @@ def listar():
             r = requests.get(api, {
                 'query': nome, 
                 'count': 10
-                })
+                }, headers = header)
             rjson = json.loads(r.content)
         except requests.ConnectionError as err:
             print('Ocorreu um erro de conexão')
@@ -57,7 +61,7 @@ def capitulos(link, slug):
         O slug seria novel/emperors-domination
     '''
     try:
-        r = requests.get(link)
+        r = requests.get(link, headers = header)
         if r.status_code != 200:
             print(f'Resposta do {r.url} \nCódigo {r.status_code}!!')
             exit()
@@ -88,7 +92,7 @@ def get_texto(link, capitulo_selecionado):
     '''
     # print(link_capitulo)
     link += capitulo_selecionado['href']
-    r = requests.get(link)
+    r = requests.get(link, headers = header)
     if r.status_code != 200:
         print(f'Resposta do url: {r.url}\n Código: {r.status_code}!!')
         exit()
