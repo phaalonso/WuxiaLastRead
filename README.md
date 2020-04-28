@@ -2,4 +2,4 @@
 Um script criado para scrapping de webnovels do site WuxiaWorld. 
 
 # Disclaimer
-I am not responsible for the usage of this program by other people.
+I'm don't own any of the content used in this program, all of it is in the WuxiaWorld website
